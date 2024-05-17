@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="./output.css" rel="stylesheet">
+ 
+</head>
+<body>
+  <!--<h1 class="text-3xl font-bold underline bg-red-300">
+    Hello world!
+    <div x-data="{ count: 0 }">
+    <button x-on:click="count++">Increment</button>
+ 
+    <span x-text="count"></span>
+</div>
+  </h1>
+  <img id="image" class="w-[200px]" src="ama-128x128.png" alt="logo">
+  -->
+  
+  <div x-data="{ image: null, croppedImage: null }">
+  <label for="image-upload">Select Image</label>
+  <input type="file" id="image-upload" accept="image/*" @change="loadImage($event)">
+
+  <div class="w-full h-64 overflow-hidden rounded-lg bg-gray-200" x-show="image">
+    <img x-ref="preview" :src="image" alt="Preview">
+  </div>
+
+  <div x-show="croppedImage" class="flex justify-center items-center">
+    <button @click="downloadCroppedImage">Download Cropped Image</button>
+  </div>
+</div>
+
+  
+  
+   <!--<script type="module" src="./js/main.js"></script>-->
+   <script>
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('imageCropper', () => ({
+      loadImage(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          this.image = e.target.result;
+          this.initCropper();
+        };
+
+        reader.readAsDataURL(file);
+      },
+
+      initCropper() {
+        const image = this.$refs.preview;
+        const cropper = new Cropper(image, {
+          aspectRatio: 16 / 9,
+          zoomable: false,
+          viewMode: 1,
+          // Add more Cropper.js options as needed
+        });
+      },
+
+      downloadCroppedImage() {
+        const croppedCanvas = this.$refs.preview.cropper.getCroppedCanvas();
+        this.croppedImage = croppedCanvas.toDataURL();
+      }
+    }));
+  });
+</script>
+
+</body>
+</html>
